@@ -1,0 +1,60 @@
+---
+title: Making Scatterplots in R
+author: Andrew Mayo
+date: '2017-09-22'
+slug: making-scatterplots-in-r
+categories:
+  - R
+tags:
+  - Visualization
+menu: "main"
+---
+
+A scatterplot is a graph in which the values of two variables are plotted along the two axes.  This type of graphic is very important when looking for correlations between variables.
+
+Let's begin by loading that packages that we will need.  For this example we will be using the Lahman database which contains baseball statistics going back over 100 years.
+```{r results='hide', message=FALSE, warning=FALSE}
+library(Lahman)
+library(dplyr)
+library(ggiraph)
+library(ggplot2)
+```
+
+In this scatterplot we are going to compare the number of career homeruns hit to the number of strikeouts.  To begin, we will group by playerID to ensure that we get all records from each player over their career.  Then we will run a summarize statement in order to get the total number of strikeouts and homeruns.  Lastly, we will filter so that we only see those who have hit over 400 homeruns in their career.  The dataframe is then stored in df.
+```{r warning = FALSE}
+df <- Batting%>%
+      group_by(playerID)%>%
+      summarize(Career_HR = sum(HR),Career_SO = sum(SO))%>%
+      filter(Career_HR >= 400)
+df
+```
+
+Next, in order to make the scatterplot more legible we want to be able to look at the player's full name rather than the playerID.  In order to do this we must join the table we just created, df, with the Master table which includes the first and last name of every player.  We must join the two tables on playerID since it is the variable which they have in common.  We will store this dataframe in HR_vs_SO.
+```{r}
+HR_vs_SO <- inner_join(df,Master,by=c("playerID"))%>%
+            select(nameFirst,nameLast,Career_HR,Career_SO)
+```
+
+Finally, to finish our dataframe we must merge both the first and last name into one single column.  To do this we can use the paste function which will combine the nameFirst and nameLast columns into a new column we have created called name.  NOTE: You can use the "$" after a dataframe in order to pull out a specific column, or in this case create one. 
+```{r}
+HR_vs_SO$name <-paste(HR_vs_SO$nameFirst,HR_vs_SO$nameLast)
+HR_vs_SO
+```
+
+Our final dataframe looks great and now it is time to put it into a plot. 
+
+```{r}
+g<-ggplot()+
+  geom_point_interactive(data = HR_vs_SO, aes(x=Career_SO,y=Career_HR,tooltip=name,data_id=nameLast))+
+  ggtitle("Career Homeruns vs Strikeouts for Great Hitters")+
+  xlab("Career Strikouts")+
+  ylab("Career Homeruns")
+```
+
+Let's break down the code for this scatterplot.  First, the ggplot() code allows us to creat a blank plot and then build off of it.  Second, the geom_point_interactive() allows us to create an interactive graphic and it is where we input our data. Data is where we place our dataframe, and then within the aes() function we place our x and y axis, the label, and the data_id which allows it to be interactive.  The ggtitle() creates the title, xlab is the x label, and ylab is the y label.
+
+In order to finish this plot we will use the ggiraph() function.  
+```{r warning = FALSE}
+ggiraph(code=print(g),hover_css="fill:white;stroke:black")
+```
+

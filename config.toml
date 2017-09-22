@@ -13,8 +13,8 @@ googleAnalytics = "" # Enable Google Analytics by entering your tracking id
 
 
 [Params]
-    subtitle = "Exploring the many facets of data science" # Subtitle of your site
-    description = " John Doe's Personal blog about everything" # Description of your site
+    subtitle = "Exploring the many facets of data science and social media" # Subtitle of your site
+    description = " Andrew Mayo's blog about Data Science and Social Media" # Description of your site
     opengraph = true
     readmore = false # Show "Read more" button in list if true
     leftsidebar = false # Move sidebar to the left side if true

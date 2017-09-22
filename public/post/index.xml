@@ -6,10 +6,21 @@
     <description>Recent content in Posts on Andrew&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 21 Sep 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 22 Sep 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Making Scatterplots in R</title>
+      <link>/post/making-scatterplots-in-r/</link>
+      <pubDate>Fri, 22 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/post/making-scatterplots-in-r/</guid>
+      <description>A scatterplot is a graph in which the values of two variables are plotted along the two axes. This type of graphic is very important when looking for correlations between variables.
+Let’s begin by loading that packages that we will need. For this example we will be using the Lahman database which contains baseball statistics going back over 100 years.
+library(Lahman)library(dplyr)library(ggiraph)library(ggplot2)In this scatterplot we are going to compare the number of career homeruns hit to the number of strikeouts.</description>
+    </item>
     
     <item>
       <title>Using R for Basic Mathematics</title>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Making Scatterplots in R</title>
+<meta name="description" content=" Andrew Mayo&#39;s blog about Data Science and Social Media">
+<meta name="generator" content="Hugo 0.27.1" />
+<meta property="og:title" content="Making Scatterplots in R" />
+<meta property="og:description" content="A scatterplot is a graph in which the values of two variables are plotted along the two axes. This type of graphic is very important when looking for correlations between variables.
+Let’s begin by loading that packages that we will need. For this example we will be using the Lahman database which contains baseball statistics going back over 100 years.
+library(Lahman)library(dplyr)library(ggiraph)library(ggplot2)In this scatterplot we are going to compare the number of career homeruns hit to the number of strikeouts." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/post/making-scatterplots-in-r/" />
+
+
+
+<meta property="article:published_time" content="2017-09-22T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2017-09-22T00:00:00&#43;00:00"/>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="dns-prefetch" href="//fonts.googleapis.com" />
+<link rel="dns-prefetch" href="//fonts.gstatic.com" />
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700" type="text/css" media="all" />
+<link rel="stylesheet" href="/css/style.css" type="text/css" media="all" />
+<script type="text/javascript" src="/js/scripts.js"></script>
+<link rel="shortcut icon" href="/favicon.ico">
+
+</head>
+<body class="body body-right-sidebar mobile" itemscope="itemscope" itemtype="http://schema.org/WebPage">
+	<div class="container container-outer">
+		<header class="header" itemscope="itemscope" itemtype="http://schema.org/WPHeader">
+			<div class="container container-inner clearfix">
+				<div class="logo" role="banner" itemscope="itemscope" itemtype="http://schema.org/Brand">
+					<a class="logo__link" href="/" title="Andrew&#39;s Blog" rel="home">
+						<h1 class="logo__title">Andrew&#39;s Blog</h1>
+						<h2 class="logo__tagline">Exploring the many facets of data science and social media</h2>
+					</a>
+				</div>
+			</div>
+			
+<nav class="menu" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
+	<ul class="menu__list">
+		<li class="menu__item menu__item--active"><a class="menu__link" href="/post/making-scatterplots-in-r/">MAKING SCATTERPLOTS IN R</a></li>
+		<li class="menu__item "><a class="menu__link" href="/post/using-r-for-basic-mathematics/">USING R FOR BASIC MATHEMATICS</a></li>
+	</ul>
+</nav>
+
+		</header>
+		<div class="wrapper clearfix">
+
+<main class="main-content content" role="main" itemprop="mainContentOfPage">
+	<article class="post">
+		<header class="post__header clearfix">
+			<h1 class="post__title">Making Scatterplots in R</h1>
+			<p class="post__meta meta">
+				<svg class="icon icon-time" height="14" viewBox="0 0 16 16" width="14" xmlns="http://www.w3.org/2000/svg"><path d="m8-.0000003c-4.4 0-8 3.6-8 8 0 4.4000003 3.6 8.0000003 8 8.0000003 4.4 0 8-3.6 8-8.0000003 0-4.4-3.6-8-8-8zm0 14.4000003c-3.52 0-6.4-2.88-6.4-6.4000003 0-3.52 2.88-6.4 6.4-6.4 3.52 0 6.4 2.88 6.4 6.4 0 3.5200003-2.88 6.4000003-6.4 6.4000003zm.4-10.4000003h-1.2v4.8l4.16 2.5600003.64-1.04-3.6-2.1600003z"/></svg>
+				<time class="post__meta-date" datetime="2017-09-22T00:00:00">September 22, 2017</time>
+				<span class="post__meta-categories meta-categories">
+					<svg class="icon icon-category" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg"><path d="m7 2l1 2h8v11h-16v-13z"/></svg>
+					<a class="meta-categories__link" href="/categories/r" rel="category">R</a></span>
+			</p>
+		</header>
+		<div class="post__content clearfix">
+			<script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="/rmarkdown-libs/d3/d3.min.js"></script>
+<script src="/rmarkdown-libs/d3-lasso/d3-lasso.min.js"></script>
+<link href="/rmarkdown-libs/ggiraph/styles.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/ggiraph-binding/ggiraph.js"></script>
+<script src="/rmarkdown-libs/uid1cb079069fc611e7a8444528bbb012c0/scripts_uid1cb079069fc611e7a8444528bbb012c0.js"></script>
+
+
+<p>A scatterplot is a graph in which the values of two variables are plotted along the two axes. This type of graphic is very important when looking for correlations between variables.</p>
+<p>Let’s begin by loading that packages that we will need. For this example we will be using the Lahman database which contains baseball statistics going back over 100 years.</p>
+<pre class="r"><code>library(Lahman)
+library(dplyr)
+library(ggiraph)
+library(ggplot2)</code></pre>
+<p>In this scatterplot we are going to compare the number of career homeruns hit to the number of strikeouts. To begin, we will group by playerID to ensure that we get all records from each player over their career. Then we will run a summarize statement in order to get the total number of strikeouts and homeruns. Lastly, we will filter so that we only see those who have hit over 400 homeruns in their career. The dataframe is then stored in df.</p>
+<pre class="r"><code>df &lt;- Batting%&gt;%
+      group_by(playerID)%&gt;%
+      summarize(Career_HR = sum(HR),Career_SO = sum(SO))%&gt;%
+      filter(Career_HR &gt;= 400)
+df</code></pre>
+<pre><code>## # A tibble: 55 x 3
+##     playerID Career_HR Career_SO
+##        &lt;chr&gt;     &lt;int&gt;     &lt;int&gt;
+##  1 aaronha01       755      1383
+##  2 bagweje01       449      1558
+##  3 bankser01       512      1236
+##  4 beltrad01       445      1584
+##  5 beltrca01       421      1693
+##  6 bondsba01       762      1539
+##  7 cabremi01       446      1516
+##  8 cansejo01       462      1942
+##  9 dawsoan01       438      1509
+## 10 delgaca01       473      1745
+## # ... with 45 more rows</code></pre>
+<p>Next, in order to make the scatterplot more legible we want to be able to look at the player’s full name rather than the playerID. In order to do this we must join the table we just created, df, with the Master table which includes the first and last name of every player. We must join the two tables on playerID since it is the variable which they have in common. We will store this dataframe in HR_vs_SO.</p>
+<pre class="r"><code>HR_vs_SO &lt;- inner_join(df,Master,by=c(&quot;playerID&quot;))%&gt;%
+            select(nameFirst,nameLast,Career_HR,Career_SO)</code></pre>
+<p>Finally, to finish our dataframe we must merge both the first and last name into one single column. To do this we can use the paste function which will combine the nameFirst and nameLast columns into a new column we have created called name. NOTE: You can use the “$” after a dataframe in order to pull out a specific column, or in this case create one.</p>
+<pre class="r"><code>HR_vs_SO$name &lt;-paste(HR_vs_SO$nameFirst,HR_vs_SO$nameLast)
+HR_vs_SO</code></pre>
+<pre><code>## # A tibble: 55 x 5
+##    nameFirst nameLast Career_HR Career_SO           name
+##        &lt;chr&gt;    &lt;chr&gt;     &lt;int&gt;     &lt;int&gt;          &lt;chr&gt;
+##  1      Hank    Aaron       755      1383     Hank Aaron
+##  2      Jeff  Bagwell       449      1558   Jeff Bagwell
+##  3     Ernie    Banks       512      1236    Ernie Banks
+##  4    Adrian   Beltre       445      1584  Adrian Beltre
+##  5    Carlos  Beltran       421      1693 Carlos Beltran
+##  6     Barry    Bonds       762      1539    Barry Bonds
+##  7    Miguel  Cabrera       446      1516 Miguel Cabrera
+##  8      Jose  Canseco       462      1942   Jose Canseco
+##  9     Andre   Dawson       438      1509   Andre Dawson
+## 10    Carlos  Delgado       473      1745 Carlos Delgado
+## # ... with 45 more rows</code></pre>
+<p>Our final dataframe looks great and now it is time to put it into a plot.</p>
+<pre class="r"><code>g&lt;-ggplot()+
+  geom_point_interactive(data = HR_vs_SO, aes(x=Career_SO,y=Career_HR,tooltip=name,data_id=nameLast))+
+  ggtitle(&quot;Career Homeruns vs Strikeouts for Great Hitters&quot;)+
+  xlab(&quot;Career Strikouts&quot;)+
+  ylab(&quot;Career Homeruns&quot;)</code></pre>
+<p>Let’s break down the code for this scatterplot. First, the ggplot() code allows us to creat a blank plot and then build off of it. Second, the geom_point_interactive() allows us to create an interactive graphic and it is where we input our data. Data is where we place our dataframe, and then within the aes() function we place our x and y axis, the label, and the data_id which allows it to be interactive. The ggtitle() creates the title, xlab is the x label, and ylab is the y label.</p>
+<p>In order to finish this plot we will use the ggiraph() function.</p>
+<pre class="r"><code>ggiraph(code=print(g),hover_css=&quot;fill:white;stroke:black&quot;)</code></pre>
+<div id="htmlwidget-1" style="width:672px;height:480px;" class="ggiraph html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"html":"<div id='uid1cb079069fc611e7a8444528bbb012c0' class='ggiraph-container' ><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"svg_1\" viewBox=\"0 0 432.00 432.00\" class=\"svg-responsive-container\">\n  <g>\n    <defs>\n      <clipPath id=\"cl1_0\">\n        <rect x=\"0.00\" y=\"432.00\" width=\"0.00\" height=\"0.00\"/>\n      \u003c/clipPath>\n    \u003c/defs>\n    <rect x=\"0.00\" y=\"0.00\" width=\"432.00\" height=\"432.00\" id=\"1\" clip-path=\"url(#cl1_0)\" fill=\"#FFFFFF\" fill-opacity=\"1\" stroke-width=\"0.75\" stroke=\"#FFFFFF\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <defs>\n      <clipPath id=\"cl1_1\">\n        <rect x=\"0.00\" y=\"0.00\" width=\"432.00\" height=\"432.00\"/>\n      \u003c/clipPath>\n    \u003c/defs>\n    <rect x=\"0.00\" y=\"0.00\" width=\"432.00\" height=\"432.00\" id=\"2\" clip-path=\"url(#cl1_1)\" fill=\"#FFFFFF\" fill-opacity=\"1\" stroke-width=\"1.06698\" stroke=\"#FFFFFF\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <defs>\n      <clipPath id=\"cl1_2\">\n        <rect x=\"38.92\" y=\"21.51\" width=\"387.60\" height=\"380.15\"/>\n      \u003c/clipPath>\n    \u003c/defs>\n    <rect x=\"38.92\" y=\"21.51\" width=\"387.60\" height=\"380.15\" id=\"3\" clip-path=\"url(#cl1_2)\" fill=\"#EBEBEB\" fill-opacity=\"1\" stroke=\"none\"/>\n    <polyline points=\"38.92,342.52 426.52,342.52\" id=\"4\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"0.533489\" stroke=\"#FFFFFF\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"38.92,245.17 426.52,245.17\" id=\"5\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"0.533489\" stroke=\"#FFFFFF\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"38.92,147.82 426.52,147.82\" id=\"6\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"0.533489\" stroke=\"#FFFFFF\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"38.92,50.47 426.52,50.47\" id=\"7\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"0.533489\" stroke=\"#FFFFFF\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"66.55,401.66 66.55,21.51\" id=\"8\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"0.533489\" stroke=\"#FFFFFF\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"159.23,401.66 159.23,21.51\" id=\"9\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"0.533489\" stroke=\"#FFFFFF\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"251.91,401.66 251.91,21.51\" id=\"10\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"0.533489\" stroke=\"#FFFFFF\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"344.58,401.66 344.58,21.51\" id=\"11\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"0.533489\" stroke=\"#FFFFFF\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"38.92,391.19 426.52,391.19\" id=\"12\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#FFFFFF\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"38.92,293.84 426.52,293.84\" id=\"13\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#FFFFFF\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"38.92,196.49 426.52,196.49\" id=\"14\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#FFFFFF\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"38.92,99.14 426.52,99.14\" id=\"15\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#FFFFFF\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"112.89,401.66 112.89,21.51\" id=\"16\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#FFFFFF\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"205.57,401.66 205.57,21.51\" id=\"17\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#FFFFFF\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"298.24,401.66 298.24,21.51\" id=\"18\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#FFFFFF\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"390.92,401.66 390.92,21.51\" id=\"19\" clip-path=\"url(#cl1_2)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#FFFFFF\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <circle cx=\"183.88\" cy=\"45.60\" r=\"1.47pt\" id=\"20\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"216.32\" cy=\"343.49\" r=\"1.47pt\" id=\"21\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"156.63\" cy=\"282.16\" r=\"1.47pt\" id=\"22\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"221.14\" cy=\"347.38\" r=\"1.47pt\" id=\"23\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"241.34\" cy=\"370.75\" r=\"1.47pt\" id=\"24\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"212.80\" cy=\"38.79\" r=\"1.47pt\" id=\"25\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"208.53\" cy=\"346.41\" r=\"1.47pt\" id=\"26\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"287.49\" cy=\"330.83\" r=\"1.47pt\" id=\"27\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"207.23\" cy=\"354.20\" r=\"1.47pt\" id=\"28\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"250.98\" cy=\"320.13\" r=\"1.47pt\" id=\"29\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"368.49\" cy=\"330.83\" r=\"1.47pt\" id=\"30\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"188.88\" cy=\"377.56\" r=\"1.47pt\" id=\"31\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"170.53\" cy=\"260.74\" r=\"1.47pt\" id=\"32\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"73.96\" cy=\"300.66\" r=\"1.47pt\" id=\"33\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"218.91\" cy=\"352.25\" r=\"1.47pt\" id=\"34\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"163.49\" cy=\"358.09\" r=\"1.47pt\" id=\"35\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"257.28\" cy=\"167.29\" r=\"1.47pt\" id=\"36\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"110.11\" cy=\"343.49\" r=\"1.47pt\" id=\"37\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"408.90\" cy=\"232.51\" r=\"1.47pt\" id=\"38\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"251.54\" cy=\"358.09\" r=\"1.47pt\" id=\"39\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"188.70\" cy=\"324.99\" r=\"1.47pt\" id=\"40\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"242.45\" cy=\"222.78\" r=\"1.47pt\" id=\"41\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"264.14\" cy=\"350.30\" r=\"1.47pt\" id=\"42\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"185.36\" cy=\"353.23\" r=\"1.47pt\" id=\"43\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"244.49\" cy=\"258.80\" r=\"1.47pt\" id=\"44\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"203.16\" cy=\"282.16\" r=\"1.47pt\" id=\"45\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"210.39\" cy=\"138.08\" r=\"1.47pt\" id=\"46\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"214.83\" cy=\"273.40\" r=\"1.47pt\" id=\"47\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"276.37\" cy=\"300.66\" r=\"1.47pt\" id=\"48\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"223.36\" cy=\"213.04\" r=\"1.47pt\" id=\"49\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"208.53\" cy=\"289.95\" r=\"1.47pt\" id=\"50\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"56.54\" cy=\"318.18\" r=\"1.47pt\" id=\"51\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"251.91\" cy=\"253.93\" r=\"1.47pt\" id=\"52\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"93.61\" cy=\"283.13\" r=\"1.47pt\" id=\"53\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"177.39\" cy=\"226.67\" r=\"1.47pt\" id=\"54\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"133.83\" cy=\"364.91\" r=\"1.47pt\" id=\"55\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"122.71\" cy=\"205.25\" r=\"1.47pt\" id=\"56\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"263.58\" cy=\"240.30\" r=\"1.47pt\" id=\"57\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"169.42\" cy=\"361.01\" r=\"1.47pt\" id=\"58\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"211.50\" cy=\"210.12\" r=\"1.47pt\" id=\"59\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"351.44\" cy=\"103.04\" r=\"1.47pt\" id=\"60\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"174.06\" cy=\"85.52\" r=\"1.47pt\" id=\"61\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"276.56\" cy=\"247.11\" r=\"1.47pt\" id=\"62\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"144.58\" cy=\"285.08\" r=\"1.47pt\" id=\"63\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"156.82\" cy=\"384.38\" r=\"1.47pt\" id=\"64\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"261.73\" cy=\"379.51\" r=\"1.47pt\" id=\"65\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"354.96\" cy=\"187.73\" r=\"1.47pt\" id=\"66\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"286.38\" cy=\"318.18\" r=\"1.47pt\" id=\"67\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"194.63\" cy=\"382.43\" r=\"1.47pt\" id=\"68\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"186.47\" cy=\"273.40\" r=\"1.47pt\" id=\"69\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"399.82\" cy=\"184.81\" r=\"1.47pt\" id=\"70\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"121.41\" cy=\"365.88\" r=\"1.47pt\" id=\"71\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"58.95\" cy=\"273.40\" r=\"1.47pt\" id=\"72\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"240.04\" cy=\"327.91\" r=\"1.47pt\" id=\"73\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <circle cx=\"185.73\" cy=\"340.57\" r=\"1.47pt\" id=\"74\" clip-path=\"url(#cl1_2)\" fill=\"#000000\" fill-opacity=\"1\" stroke-width=\"0.708661\" stroke=\"#000000\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n    <defs>\n      <clipPath id=\"cl1_3\">\n        <rect x=\"0.00\" y=\"0.00\" width=\"432.00\" height=\"432.00\"/>\n      \u003c/clipPath>\n    \u003c/defs>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"18.97\" y=\"394.41\" id=\"75\" font-size=\"6.60pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Arial\">400\u003c/text>\n    \u003c/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"18.97\" y=\"297.06\" id=\"76\" font-size=\"6.60pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Arial\">500\u003c/text>\n    \u003c/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"18.97\" y=\"199.71\" id=\"77\" font-size=\"6.60pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Arial\">600\u003c/text>\n    \u003c/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"18.97\" y=\"102.36\" id=\"78\" font-size=\"6.60pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Arial\">700\u003c/text>\n    \u003c/g>\n    <polyline points=\"36.18,391.19 38.92,391.19\" id=\"79\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#333333\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"36.18,293.84 38.92,293.84\" id=\"80\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#333333\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"36.18,196.49 38.92,196.49\" id=\"81\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#333333\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"36.18,99.14 38.92,99.14\" id=\"82\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#333333\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"112.89,404.40 112.89,401.66\" id=\"83\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#333333\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"205.57,404.40 205.57,401.66\" id=\"84\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#333333\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"298.24,404.40 298.24,401.66\" id=\"85\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#333333\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <polyline points=\"390.92,404.40 390.92,401.66\" id=\"86\" clip-path=\"url(#cl1_3)\" fill=\"none\" stroke-width=\"1.06698\" stroke=\"#333333\" stroke-opacity=\"1\" stroke-linejoin=\"round\" stroke-linecap=\"butt\"/>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"102.88\" y=\"413.03\" id=\"87\" font-size=\"6.60pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Arial\">1000\u003c/text>\n    \u003c/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"195.56\" y=\"413.03\" id=\"88\" font-size=\"6.60pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Arial\">1500\u003c/text>\n    \u003c/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"288.23\" y=\"413.03\" id=\"89\" font-size=\"6.60pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Arial\">2000\u003c/text>\n    \u003c/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"380.91\" y=\"413.03\" id=\"90\" font-size=\"6.60pt\" fill=\"#4D4D4D\" fill-opacity=\"1\" font-family=\"Arial\">2500\u003c/text>\n    \u003c/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"192.99\" y=\"426.38\" id=\"91\" font-size=\"8.25pt\" font-family=\"Arial\">Career Strikouts\u003c/text>\n    \u003c/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text transform=\"translate(13.35,255.29) rotate(-90)\" id=\"92\" font-size=\"8.25pt\" font-family=\"Arial\">Career Homeruns\u003c/text>\n    \u003c/g>\n    <g clip-path=\"url(#cl1_3)\">\n      <text x=\"38.92\" y=\"14.79\" id=\"93\" font-size=\"9.90pt\" font-family=\"Arial\">Career Homeruns vs Strikeouts for Great Hitters\u003c/text>\n    \u003c/g>\n  \u003c/g>\n\u003c/svg>\n<div class='ggiraph-toolbar'><div class='ggiraph-toolbar-block shinyonly'><a class='ggiraph-toolbar-icon neutral' title='lasso selection' href='javascript:lasso_on(\"uid1cb079069fc611e7a8444528bbb012c0\", true, \"array_selected_uid1cb079069fc611e7a8444528bbb012c0\", \"clicked_uid1cb079069fc611e7a8444528bbb012c0\");'><svg width='1.5em' height='1.5em' viewBox='0 0 230 230'><g><ellipse ry='65.5' rx='86.5' cy='94' cx='115.5' stroke-width='20' fill='transparent'/><ellipse ry='11.500001' rx='10.5' cy='153' cx='91.5' stroke-width='20' fill='transparent'/><line y2='210.5' x2='105' y1='164.5' x1='96' stroke-width='20'/>\u003c/g>\u003c/svg>\u003c/a><a class='ggiraph-toolbar-icon drop' title='lasso anti-selection' href='javascript:lasso_on(\"uid1cb079069fc611e7a8444528bbb012c0\", false, \"array_selected_uid1cb079069fc611e7a8444528bbb012c0\", \"clicked_uid1cb079069fc611e7a8444528bbb012c0\");'><svg width='1.5em' height='1.5em' viewBox='0 0 230 230'><g><ellipse ry='65.5' rx='86.5' cy='94' cx='115.5' stroke-width='20' fill='transparent'/><ellipse ry='11.500001' rx='10.5' cy='153' cx='91.5' stroke-width='20' fill='transparent'/><line y2='210.5' x2='105' y1='164.5' x1='96' stroke-width='20'/>\u003c/g>\u003c/svg>\u003c/a>\u003c/div>\u003c/div><style>div.tooltip_uid1cb079069fc611e7a8444528bbb012c0 {position:absolute;pointer-events:none;z-index:999;padding:5px;background:black;color:white;border-radius:2px 2px 2px 2px;}\n.cl_data_id_uid1cb079069fc611e7a8444528bbb012c0:{}.cl_data_id_uid1cb079069fc611e7a8444528bbb012c0:hover{fill:white;stroke:black}\n.clicked_uid1cb079069fc611e7a8444528bbb012c0{fill:white;stroke:black}\u003c/style>\u003c/div>","uid":"uid1cb079069fc611e7a8444528bbb012c0","funname":"init_prop_uid1cb079069fc611e7a8444528bbb012c0","sel_array_name":"array_selected_uid1cb079069fc611e7a8444528bbb012c0","selected_class":"clicked_uid1cb079069fc611e7a8444528bbb012c0","tooltip_opacity":0.9,"tooltip_offx":10,"tooltip_offy":0,"zoom_max":1,"use_wh":false,"width":"80%","selection_type":"multiple","flexdashboard":false},"evals":[],"jsHooks":[]}</script>
+
+		</div>
+		
+<div class="post__tags tags clearfix">
+	<svg class="icon icon-tag" width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="m4.73135 3.3795002q0-.5597-.39604-.9557-.39604-.3961-.95577-.3961-.55974 0-.95578.3961-.39604.396-.39604.9557 0 .5598.39604.9558.39604.3961.95578.3961.55973 0 .95577-.3961.39604-.396.39604-.9558zm11.26865 6.0832q0 .5596998-.39076.9504998l-5.18548 5.196q-.41188.3908-.9610504.3908-.55974 0-.9505-.3908l-7.5511496-7.5616998q-.40132-.3907-.68119-1.0666-.27987-.6759-.27987-1.2357v-4.3934q0-.54920004.40132-.95050004.40132-.4013.9505-.4013h4.39339q.55974 0 1.23565.2799.67591.2798 1.07723.6812l7.55115 7.54060004q.39076.4118.39076.961z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item"><a class="tags__link" href="/tags/visualization/" rel="tag">Visualization</a></li>
+	</ul>
+</div>
+
+	</article>
+	
+<div class="authorbox clearfix">
+	<figure class="authorbox__avatar">
+		<img alt="Andrew Mayo avatar" src="/img/avatar.png" class="avatar" height="90" width="90">
+	</figure>
+	<div class="authorbox__header">
+		<span class="authorbox__name">Andrew Mayo</span>
+	</div>
+	<div class="authorbox__description">
+		Andrew Mayo is a graduate Data Science student with a Bachelor&#39;s Degree in Intelligence Studies.
+	</div>
+</div>
+	
+<nav class="post-nav row clearfix" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
+	<div class="post-nav__item post-nav__item--prev col-1-2">
+		<a class="post-nav__link" href="/post/using-r-for-basic-mathematics/" rel="prev"><span class="post-nav__caption">«Previous</span><p class="post-nav__post-title">Using R for Basic Mathematics</p></a>
+	</div>
+</nav>
+
+	
+</main>
+
+<aside class="sidebar" itemscope="itemscope" itemtype="http://schema.org/WPSideBar">
+	
+<div class="widget-search widget">
+	<form class="widget-search__form" role="search" method="get" action="//google.com/search">
+		<label>
+			<span class="screen-reader-text">Search for:</span>
+			<input class="widget-search__field" type="search" placeholder="SEARCH..." value="" name="q">
+		</label>
+		<input class="widget-search__submit" type="submit" value="Search">
+		<input type="hidden" name="sitesearch" value="/" />
+	</form>
+</div>
+	
+<div class="widget-recent widget">
+	<h4 class="widget__title">Recent Posts</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/post/making-scatterplots-in-r/">Making Scatterplots in R</a></li>
+			<li class="widget__item"><a class="widget__link" href="/post/using-r-for-basic-mathematics/">Using R for Basic Mathematics</a></li>
+		</ul>
+	</div>
+</div>
+
+	
+<div class="widget-categories widget">
+	<h4 class="widget__title">Categories</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/categories/r">R</a></li>
+		</ul>
+	</div>
+</div>
+	
+
+	
+<div class="widget-taglist widget">
+	<h4 class="widget__title">Tags</h4>
+	<div class="widget__content">
+		<a class="widget__link widget__link--taglist" href="/tags/mathematics" title="mathematics">mathematics</a>
+		<a class="widget__link widget__link--taglist" href="/tags/visualization" title="visualization">visualization</a>
+	</div>
+</div>
+</aside>
+
+	</div>
+		<footer class="footer" itemscope="itemscope" itemtype="http://schema.org/WPFooter">
+			<div class="container container-inner">
+				<p class="footer__copyright">&copy; 2017 Andrew&#39;s Blog. <span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad theme</a>.</span></p>
+			</div>
+		</footer>
+	</div>
+
+<script>
+	var navigation = responsiveNav(".menu", {
+		navClass: "menu--collapse",
+	});
+</script>
+</body>
+</html>
