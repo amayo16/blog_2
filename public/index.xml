@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Andrew&#39;s Blog</title>
+    <link>/</link>
+    <description>Recent content on Andrew&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 21 Sep 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Using R for Basic Mathematics</title>
+      <link>/post/using-r-for-basic-mathematics/</link>
+      <pubDate>Thu, 21 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/post/using-r-for-basic-mathematics/</guid>
+      <description>AdditionLet’s try some basic addition in R.
+x &amp;lt;- 7y &amp;lt;- 3x + y## [1] 10SubtractionNow let’s try subtraction.
+x &amp;lt;- 7y &amp;lt;- 3x-y## [1] 4</description>
+    </item>
+    
+    <item>
+      <title>About Hugo</title>
+      <link>/about/</link>
+      <pubDate>Wed, 09 Apr 2014 00:00:00 +0000</pubDate>
+      
+      <guid>/about/</guid>
+      <description>Hugo is a static site engine written in Go.
+It makes use of a variety of open source projects including:
+ Cobra Viper J Walter Weatherman Cast  Learn more and contribute on GitHub.
+Setup Some fun facts about Hugo:
+ Built in Go Loosely inspired by Jekyll Primarily developed by spf13 on the train while commuting to and from Manhattan. Coded in Vim using spf13-vim  Have questions or suggestions?</description>
+    </item>
+    
+    <item>
+      <title>This is my first post</title>
+      <link>/post/goisforlovers/</link>
+      <pubDate>Wed, 02 Apr 2014 00:00:00 +0000</pubDate>
+      
+      <guid>/post/goisforlovers/</guid>
+      <description>##Testing
+I wanted to see how this would work.</description>
+    </item>
+    
+  </channel>
+</rss>

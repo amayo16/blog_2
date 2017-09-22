@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>R on Andrew&#39;s Blog</title>
+    <link>/categories/r/</link>
+    <description>Recent content in R on Andrew&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 21 Sep 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/categories/r/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Using R for Basic Mathematics</title>
+      <link>/post/using-r-for-basic-mathematics/</link>
+      <pubDate>Thu, 21 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/post/using-r-for-basic-mathematics/</guid>
+      <description>AdditionLet’s try some basic addition in R.
+x &amp;lt;- 7y &amp;lt;- 3x + y## [1] 10SubtractionNow let’s try subtraction.
+x &amp;lt;- 7y &amp;lt;- 3x-y## [1] 4</description>
+    </item>
+    
+  </channel>
+</rss>
