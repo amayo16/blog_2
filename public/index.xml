@@ -35,15 +35,5 @@ Setup Some fun facts about Hugo:
  Built in Go Loosely inspired by Jekyll Primarily developed by spf13 on the train while commuting to and from Manhattan. Coded in Vim using spf13-vim  Have questions or suggestions?</description>
     </item>
     
-    <item>
-      <title>This is my first post</title>
-      <link>/post/goisforlovers/</link>
-      <pubDate>Wed, 02 Apr 2014 00:00:00 +0000</pubDate>
-      
-      <guid>/post/goisforlovers/</guid>
-      <description>##Testing
-I wanted to see how this would work.</description>
-    </item>
-    
   </channel>
 </rss>
