@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Egypt on Andrew&#39;s Blog</title>
+    <link>/tags/egypt/</link>
+    <description>Recent content in Egypt on Andrew&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 27 Sep 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/egypt/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>ISIS insurgency in Egypt&#39;s Sinai Peninsula</title>
+      <link>/post/isis-insurgency-in-egypt-s-sinai-peninsula/</link>
+      <pubDate>Wed, 27 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/post/isis-insurgency-in-egypt-s-sinai-peninsula/</guid>
+      <description>The Egyptian military has struggled to maintain control of the Sinai Peninsula since the Egyptian revolution in 2011. The insurgency originally consisted Bedouin tribesmen, a nomadic group living in the desert regions of North Africa. The group has made multiple attacks upon the Egyptian military but have yet to claim allegiance to any specific group. Since 2014, a second insurgency known as Ansar Bait al-Maqdis, a jihadist extremist militant group, has claimed territory in the region and pledged allegiance to the Islamic State.</description>
+    </item>
+    
+    <item>
+      <title>The Coptic Christians of Egypt</title>
+      <link>/post/the-coptic-christians-of-egypt/</link>
+      <pubDate>Wed, 27 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/post/the-coptic-christians-of-egypt/</guid>
+      <description>The Coptic Christians are the largest Christian community in the Middle East and are made up of approximately nine million Egyptian citizens, or roughly 10% of the population. The Copts can trace their lineage back St. Mark the Apostle and the creation of the Coptic Church sometime in the first century. In 451 AD, the Coptic Church split from the Christian community due to theological differences. Since this split, the Coptic community has been a major target for violence and persecution.</description>
+    </item>
+    
+  </channel>
+</rss>

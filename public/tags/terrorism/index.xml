@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Terrorism on Andrew&#39;s Blog</title>
+    <link>/tags/terrorism/</link>
+    <description>Recent content in Terrorism on Andrew&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 27 Sep 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/terrorism/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>ISIS insurgency in Egypt&#39;s Sinai Peninsula</title>
+      <link>/post/isis-insurgency-in-egypt-s-sinai-peninsula/</link>
+      <pubDate>Wed, 27 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/post/isis-insurgency-in-egypt-s-sinai-peninsula/</guid>
+      <description>The Egyptian military has struggled to maintain control of the Sinai Peninsula since the Egyptian revolution in 2011. The insurgency originally consisted Bedouin tribesmen, a nomadic group living in the desert regions of North Africa. The group has made multiple attacks upon the Egyptian military but have yet to claim allegiance to any specific group. Since 2014, a second insurgency known as Ansar Bait al-Maqdis, a jihadist extremist militant group, has claimed territory in the region and pledged allegiance to the Islamic State.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -8,6 +8,16 @@
   </url>
   
   <url>
+    <loc>/post/isis-insurgency-in-egypt-s-sinai-peninsula/</loc>
+    <lastmod>2017-09-27T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/the-coptic-christians-of-egypt/</loc>
+    <lastmod>2017-09-27T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/post/making-scatterplots-in-r/</loc>
     <lastmod>2017-09-22T00:00:00+00:00</lastmod>
   </url>
@@ -25,6 +35,18 @@
   
   <url>
     <loc>/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/egypt/</loc>
+    <lastmod>2017-09-27T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/isis/</loc>
+    <lastmod>2017-09-27T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -47,8 +69,20 @@
   </url>
   
   <url>
+    <loc>/categories/social-media/</loc>
+    <lastmod>2017-09-27T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>/tags/</loc>
-    <lastmod>2017-09-21T00:00:00+00:00</lastmod>
+    <lastmod>2017-09-27T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/terrorism/</loc>
+    <lastmod>2017-09-27T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   

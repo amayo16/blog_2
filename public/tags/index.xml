@@ -6,10 +6,28 @@
     <description>Recent content in Tags on Andrew&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 21 Sep 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 27 Sep 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Egypt</title>
+      <link>/tags/egypt/</link>
+      <pubDate>Wed, 27 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/egypt/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Isis</title>
+      <link>/tags/isis/</link>
+      <pubDate>Wed, 27 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/isis/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Mathematics</title>
@@ -17,6 +35,15 @@
       <pubDate>Thu, 21 Sep 2017 00:00:00 +0000</pubDate>
       
       <guid>/tags/mathematics/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Terrorism</title>
+      <link>/tags/terrorism/</link>
+      <pubDate>Wed, 27 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/terrorism/</guid>
       <description></description>
     </item>
     
