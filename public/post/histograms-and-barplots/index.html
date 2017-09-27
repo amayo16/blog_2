@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Using R for Basic Mathematics</title>
+<title>Histograms and Barplots</title>
 <meta name="description" content=" Andrew Mayo&#39;s blog about Data Science and Social Media">
 <meta name="generator" content="Hugo 0.27.1" />
-<meta property="og:title" content="Using R for Basic Mathematics" />
-<meta property="og:description" content="AdditionLet’s try some basic addition in R.
-x &lt;- 7y &lt;- 3x &#43; y## [1] 10SubtractionNow let’s try subtraction.
-x &lt;- 7y &lt;- 3x-y## [1] 4" />
+<meta property="og:title" content="Histograms and Barplots" />
+<meta property="og:description" content="HistogramsA histogram is an accurate graphical representation of the distribution of numberical data. It takes one group of numerical data and places it along the x-axis seperating it into bins. This allows the researcher to do initial analysis to see how the data is distributed.
+For this example we will need these packages:
+library(Lahman)library(dplyr)library(ggplot2)library(ggiraph)Now that we have the packages loaded in we want to query the database to select what data we want to visualize." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="/post/using-r-for-basic-mathematics/" />
+<meta property="og:url" content="/post/histograms-and-barplots/" />
 
 
 
-<meta property="article:published_time" content="2017-09-21T00:00:00&#43;00:00"/>
-<meta property="article:modified_time" content="2017-09-21T00:00:00&#43;00:00"/>
+<meta property="article:published_time" content="2017-09-27T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2017-09-27T00:00:00&#43;00:00"/>
 
 
 
@@ -51,9 +51,9 @@ x &lt;- 7y &lt;- 3x-y## [1] 4" />
 			
 <nav class="menu" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
 	<ul class="menu__list">
-		<li class="menu__item "><a class="menu__link" href="/post/histograms-and-barplots/">HISTOGRAMS AND BARPLOTS</a></li>
+		<li class="menu__item menu__item--active"><a class="menu__link" href="/post/histograms-and-barplots/">HISTOGRAMS AND BARPLOTS</a></li>
 		<li class="menu__item "><a class="menu__link" href="/post/making-scatterplots-in-r/">MAKING SCATTERPLOTS IN R</a></li>
-		<li class="menu__item menu__item--active"><a class="menu__link" href="/post/using-r-for-basic-mathematics/">USING R FOR BASIC MATHEMATICS</a></li>
+		<li class="menu__item "><a class="menu__link" href="/post/using-r-for-basic-mathematics/">USING R FOR BASIC MATHEMATICS</a></li>
 	</ul>
 </nav>
 
@@ -63,34 +63,50 @@ x &lt;- 7y &lt;- 3x-y## [1] 4" />
 <main class="main-content content" role="main" itemprop="mainContentOfPage">
 	<article class="post">
 		<header class="post__header clearfix">
-			<h1 class="post__title">Using R for Basic Mathematics</h1>
+			<h1 class="post__title">Histograms and Barplots</h1>
 			<p class="post__meta meta">
 				<svg class="icon icon-time" height="14" viewBox="0 0 16 16" width="14" xmlns="http://www.w3.org/2000/svg"><path d="m8-.0000003c-4.4 0-8 3.6-8 8 0 4.4000003 3.6 8.0000003 8 8.0000003 4.4 0 8-3.6 8-8.0000003 0-4.4-3.6-8-8-8zm0 14.4000003c-3.52 0-6.4-2.88-6.4-6.4000003 0-3.52 2.88-6.4 6.4-6.4 3.52 0 6.4 2.88 6.4 6.4 0 3.5200003-2.88 6.4000003-6.4 6.4000003zm.4-10.4000003h-1.2v4.8l4.16 2.5600003.64-1.04-3.6-2.1600003z"/></svg>
-				<time class="post__meta-date" datetime="2017-09-21T00:00:00">September 21, 2017</time>
+				<time class="post__meta-date" datetime="2017-09-27T00:00:00">September 27, 2017</time>
 				<span class="post__meta-categories meta-categories">
 					<svg class="icon icon-category" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg"><path d="m7 2l1 2h8v11h-16v-13z"/></svg>
 					<a class="meta-categories__link" href="/categories/r" rel="category">R</a></span>
 			</p>
 		</header>
 		<div class="post__content clearfix">
-			<figure class="post__thumbnail">
-				<img src="/img/books.jpg" alt="Using R for Basic Mathematics">
-			</figure>
-			<div id="addition" class="section level2">
-<h2>Addition</h2>
-<p>Let’s try some basic addition in R.</p>
-<pre class="r"><code>x &lt;- 7
-y &lt;- 3
-x + y</code></pre>
-<pre><code>## [1] 10</code></pre>
+			<div id="histograms" class="section level2">
+<h2>Histograms</h2>
+<p>A histogram is an accurate graphical representation of the distribution of numberical data. It takes one group of numerical data and places it along the x-axis seperating it into bins. This allows the researcher to do initial analysis to see how the data is distributed.</p>
+<p>For this example we will need these packages:</p>
+<pre class="r"><code>library(Lahman)
+library(dplyr)
+library(ggplot2)
+library(ggiraph)</code></pre>
+<p>Now that we have the packages loaded in we want to query the database to select what data we want to visualize. In this example we will look at the distribution of weights of every player.</p>
+<pre class="r"><code>df &lt;- Master%&gt;%
+      filter(!is.na(weight))%&gt;%
+      select(weight)</code></pre>
+<p>One observation to make about this code is the !is.na() function. This line of code ensures that all NAs are removed from the dataset.</p>
+<p>Now that we have our dataset we will use the ggplot() function, similar to the scatterplot. The differences in this plot is that we only select data for the x-axis and we have to select the number of bins.</p>
+<pre class="r"><code>ggplot()+
+  geom_histogram(data = df, aes(x=weight), color = &quot;white&quot;, fill = &quot;blue&quot;, bins = 30)+
+  ggtitle(&quot;Baseball Player Weights&quot;)</code></pre>
+<p><img src="/post/2017-09-27-histograms-and-barplots_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 </div>
-<div id="subtraction" class="section level2">
-<h2>Subtraction</h2>
-<p>Now let’s try subtraction.</p>
-<pre class="r"><code>x &lt;- 7
-y &lt;- 3
-x-y</code></pre>
-<pre><code>## [1] 4</code></pre>
+<div id="barplots" class="section level2">
+<h2>Barplots</h2>
+<p>A barplot is a chart or graph that presents categorical data with rectangular bars with heights or lengths proportional to the values that they represent. These allow the researcher to comopare the sizes of different groups.</p>
+<p>In our example we will look at how many homeruns each team hit in 1980.</p>
+<pre class="r"><code>df &lt;- Teams%&gt;%
+        filter(yearID == 1980)%&gt;%
+        select(name , HR)%&gt;%
+        arrange(HR)</code></pre>
+<p>In order to ensure that our barplot is shown in the order from most homeruns to least we have to change it to a factor and use the levels from our dataframe that was created.</p>
+<pre class="r"><code>df$name &lt;- factor(df$name, levels = df$name)</code></pre>
+<p>Lastly, we put the data into our plot.</p>
+<pre class="r"><code>ggplot()+
+  geom_bar(data = df, aes(x = name, y = HR), stat = &quot;identity&quot;, color = &quot;blue&quot;, fill = &quot;white&quot;)+
+  coord_flip()</code></pre>
+<p><img src="/post/2017-09-27-histograms-and-barplots_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 
 		</div>
@@ -98,7 +114,7 @@ x-y</code></pre>
 <div class="post__tags tags clearfix">
 	<svg class="icon icon-tag" width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="m4.73135 3.3795002q0-.5597-.39604-.9557-.39604-.3961-.95577-.3961-.55974 0-.95578.3961-.39604.396-.39604.9557 0 .5598.39604.9558.39604.3961.95578.3961.55973 0 .95577-.3961.39604-.396.39604-.9558zm11.26865 6.0832q0 .5596998-.39076.9504998l-5.18548 5.196q-.41188.3908-.9610504.3908-.55974 0-.9505-.3908l-7.5511496-7.5616998q-.40132-.3907-.68119-1.0666-.27987-.6759-.27987-1.2357v-4.3934q0-.54920004.40132-.95050004.40132-.4013.9505-.4013h4.39339q.55974 0 1.23565.2799.67591.2798 1.07723.6812l7.55115 7.54060004q.39076.4118.39076.961z"/></svg>
 	<ul class="tags__list">
-		<li class="tags__item"><a class="tags__link" href="/tags/mathematics/" rel="tag">Mathematics</a></li>
+		<li class="tags__item"><a class="tags__link" href="/tags/visualization/" rel="tag">Visualization</a></li>
 	</ul>
 </div>
 
@@ -117,8 +133,8 @@ x-y</code></pre>
 </div>
 	
 <nav class="post-nav row clearfix" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
-	<div class="post-nav__item post-nav__item--next col-1-2">
-		<a class="post-nav__link" href="/post/making-scatterplots-in-r/" rel="next"><span class="post-nav__caption">Next»</span><p class="post-nav__post-title">Making Scatterplots in R</p></a>
+	<div class="post-nav__item post-nav__item--prev col-1-2">
+		<a class="post-nav__link" href="/post/making-scatterplots-in-r/" rel="prev"><span class="post-nav__caption">«Previous</span><p class="post-nav__post-title">Making Scatterplots in R</p></a>
 	</div>
 </nav>
 

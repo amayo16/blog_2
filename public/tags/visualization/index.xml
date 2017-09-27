@@ -6,10 +6,21 @@
     <description>Recent content in Visualization on Andrew&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 22 Sep 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 27 Sep 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/visualization/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Histograms and Barplots</title>
+      <link>/post/histograms-and-barplots/</link>
+      <pubDate>Wed, 27 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/post/histograms-and-barplots/</guid>
+      <description>HistogramsA histogram is an accurate graphical representation of the distribution of numberical data. It takes one group of numerical data and places it along the x-axis seperating it into bins. This allows the researcher to do initial analysis to see how the data is distributed.
+For this example we will need these packages:
+library(Lahman)library(dplyr)library(ggplot2)library(ggiraph)Now that we have the packages loaded in we want to query the database to select what data we want to visualize.</description>
+    </item>
     
     <item>
       <title>Making Scatterplots in R</title>

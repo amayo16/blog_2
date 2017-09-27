@@ -1,0 +1,10 @@
+---
+title: Histograms and Barcharts
+author: Andrew Mayo
+date: '2017-09-27'
+slug: histograms-and-barcharts
+categories: []
+tags:
+  - Visualization
+---
+

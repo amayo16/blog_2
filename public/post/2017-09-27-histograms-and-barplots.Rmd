@@ -1,0 +1,62 @@
+---
+title: Histograms and Barplots
+author: Andrew Mayo
+date: '2017-09-27'
+slug: histograms-and-barplots
+categories:
+  - R
+tags:
+  - Visualization
+menu: "main"
+---
+
+##Histograms
+A histogram is an accurate graphical representation of the distribution of numberical data.  It takes one group of numerical data and places it along the x-axis seperating it into bins.  This allows the researcher to do initial analysis to see how the data is distributed.
+
+For this example we will need these packages:
+```{r results='hide', message=FALSE, warning=FALSE}
+library(Lahman)
+library(dplyr)
+library(ggplot2)
+library(ggiraph)
+```
+
+Now that we have the packages loaded in we want to query the database to select what data we want to visualize.  In this example we will look at the distribution of weights of every player.
+```{r warning=FALSE}
+df <- Master%>%
+      filter(!is.na(weight))%>%
+      select(weight)
+```
+
+One observation to make about this code is the !is.na() function. This line of code ensures that all NAs are removed from the dataset.
+
+Now that we have our dataset we will use the ggplot() function, similar to the scatterplot.  The differences in this plot is that we only select data for the x-axis and we have to select the number of bins.
+```{r}
+ggplot()+
+  geom_histogram(data = df, aes(x=weight), color = "white", fill = "blue", bins = 30)+
+  ggtitle("Baseball Player Weights")
+```
+
+##Barplots
+A barplot is a chart or graph that presents categorical data with rectangular bars with heights or lengths proportional to the values that they represent.  These allow the researcher to comopare the sizes of different groups.
+
+In our example we will look at how many homeruns each team hit in 1980.
+```{r}
+df <- Teams%>%
+        filter(yearID == 1980)%>%
+        select(name , HR)%>%
+        arrange(HR)
+```
+
+In order to ensure that our barplot is shown in the order from most homeruns to least we have to change it to a factor and use the levels from our dataframe that was created.
+```{r}
+df$name <- factor(df$name, levels = df$name)
+```
+
+Lastly, we put the data into our plot.
+```{r}
+ggplot()+
+  geom_bar(data = df, aes(x = name, y = HR), stat = "identity", color = "blue", fill = "white")+
+  coord_flip()
+```
+

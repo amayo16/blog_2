@@ -1,0 +1,49 @@
+---
+title: Histograms and Barplots
+author: Andrew Mayo
+date: '2017-09-27'
+slug: histograms-and-barplots
+categories:
+  - R
+tags:
+  - Visualization
+menu: "main"
+---
+
+
+
+<div id="histograms" class="section level2">
+<h2>Histograms</h2>
+<p>A histogram is an accurate graphical representation of the distribution of numberical data. It takes one group of numerical data and places it along the x-axis seperating it into bins. This allows the researcher to do initial analysis to see how the data is distributed.</p>
+<p>For this example we will need these packages:</p>
+<pre class="r"><code>library(Lahman)
+library(dplyr)
+library(ggplot2)
+library(ggiraph)</code></pre>
+<p>Now that we have the packages loaded in we want to query the database to select what data we want to visualize. In this example we will look at the distribution of weights of every player.</p>
+<pre class="r"><code>df &lt;- Master%&gt;%
+      filter(!is.na(weight))%&gt;%
+      select(weight)</code></pre>
+<p>One observation to make about this code is the !is.na() function. This line of code ensures that all NAs are removed from the dataset.</p>
+<p>Now that we have our dataset we will use the ggplot() function, similar to the scatterplot. The differences in this plot is that we only select data for the x-axis and we have to select the number of bins.</p>
+<pre class="r"><code>ggplot()+
+  geom_histogram(data = df, aes(x=weight), color = &quot;white&quot;, fill = &quot;blue&quot;, bins = 30)+
+  ggtitle(&quot;Baseball Player Weights&quot;)</code></pre>
+<p><img src="/post/2017-09-27-histograms-and-barplots_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="barplots" class="section level2">
+<h2>Barplots</h2>
+<p>A barplot is a chart or graph that presents categorical data with rectangular bars with heights or lengths proportional to the values that they represent. These allow the researcher to comopare the sizes of different groups.</p>
+<p>In our example we will look at how many homeruns each team hit in 1980.</p>
+<pre class="r"><code>df &lt;- Teams%&gt;%
+        filter(yearID == 1980)%&gt;%
+        select(name , HR)%&gt;%
+        arrange(HR)</code></pre>
+<p>In order to ensure that our barplot is shown in the order from most homeruns to least we have to change it to a factor and use the levels from our dataframe that was created.</p>
+<pre class="r"><code>df$name &lt;- factor(df$name, levels = df$name)</code></pre>
+<p>Lastly, we put the data into our plot.</p>
+<pre class="r"><code>ggplot()+
+  geom_bar(data = df, aes(x = name, y = HR), stat = &quot;identity&quot;, color = &quot;blue&quot;, fill = &quot;white&quot;)+
+  coord_flip()</code></pre>
+<p><img src="/post/2017-09-27-histograms-and-barplots_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
