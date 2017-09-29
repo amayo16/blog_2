@@ -1,0 +1,72 @@
+---
+title: Barplots Part 2 and Timeseries
+author: Andrew Mayo
+date: '2017-09-29'
+slug: barplots-part-2-and-timeseries
+categories:
+  - R
+tags:
+  - Visualization
+menu: "main"
+---
+
+##Interactive Barplots
+Previously, we showed how to do basic barplots.  Today we will use ggiraph in order to change our barplot to an interactive bar plot. 
+
+We begin by loading in the necessary packages.
+```{r results='hide', message=FALSE, warning = FALSE}
+library(Lahman)
+library(dplyr)
+library(ggplot2)
+library(ggiraph)
+```
+
+Then we will query the data and order it by most homeruns, similar to last time.
+```{r warning=FALSE}
+df <- Teams%>%
+  filter(yearID == 1980)%>%
+  select(name , HR)%>%
+  arrange(HR)
+
+df$name <- factor(df$name, levels = df$name)
+```
+
+Now we will put the data into our plot.
+```{r warning=FALSE}
+G <- ggplot()+
+      geom_bar_interactive(data = df, aes(x = name, y = HR, tooltip = HR, data_id = name), stat = "identity", color = "blue", fill = "white")+
+      coord_flip()+
+      ggtitle("Homeruns hit in 1980")+
+      xlab("Teams")+
+      ylab("Homeruns")
+```
+
+You will notice that there are a few differences with this function compared to the original barplot. First, the function has been changed to geom_bar_interactive(), this makes it an interactive graph.  Within the function we had to had things such as tooltip (the value that shows up when you hover), data_id (the unique id for each record), stat (a necessary part of the function), and then your color and fill of the graphic.
+
+Now we will put our ggplot into ggiraph.
+```{r warning=FALSE}
+ggiraph(code = print(G), hover_css = "fill:blue; stroke:white")
+```
+
+Now we have a readable interactive graphic!
+
+##Timeseries
+A time series is a series of data points indexed in time order. Time series are typically plotted via line charts. For our query we will be looking at the number of homeruns that Babe Ruth hit each year over the course of his career.
+```{r warning=FALSE}
+df <- Batting%>%
+        filter(playerID == "ruthba01")%>%
+        select(yearID,HR)
+```
+
+In order to graph the data we will use ggplot once again. However, you will notice in this plot it will actually be the combination of two separate graphics; a line graph and a scatterplot. We will make the scatterplot the interactive graph so that it shows the number of homeruns hit each year at every point.
+```{r warning=FALSE}
+G <- ggplot()+
+      geom_line(data = df, aes(x=yearID,y=HR))+
+      geom_point_interactive(data=df, aes(x=yearID,y=HR,tooltip=HR, data_id = yearID))
+```
+
+To finish, we will place our graph within the ggiraph function.
+```{r warning=FALSE}
+ggiraph(code = print(G), hover_css = "fill:white; stroke:red")
+```
+
