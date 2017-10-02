@@ -1,0 +1,38 @@
+---
+title: Introduction to Dashboards
+author: Andrew Mayo
+date: '2017-10-02'
+slug: introduction-to-dashboards
+categories:
+  - R
+tags:
+  - Visualization
+menu: "main"
+---
+
+A dashboard is a grouping of many visualizations that all tend to have a common theme. Today we will be creating a dashboard within R using data from the Lahman package. In order to create a dashboard we will be using the flexdashboard package. To begin, first go to new file and select R Markdown. Second, select 'from template' and choose the Flex Dashboard option.  This will open up a file that looks similar to an R markdown file but is already formatted to make creating the dashboard easier.
+
+At the top of the file you can change the title of your dashboard. Below the basic formatting section of the file you will want to input any functions you will want to use throughout the dashboard. In my example I used these packages and data:
+```{r warning = FALSE, results='hide', message=FALSE}
+library(flexdashboard)
+library(dplyr)
+library(Lahman)
+library(ggplot2)
+result <- Batting%>%
+            filter(playerID == "ruthba01")%>%
+            select(SO, HR, yearID)
+```
+
+Below the R script we will want to include a sidebar. The sidebar is an area of the dashboard where you can explain what the graphics are about. To place a sidebar within the dashboard the formatting will look like this (exclude the quotations):
+
+"Inputs {.sidebar}"
+
+"---------------------------------------------------------------"
+
+Below the dashed line you can input what you want the sidebar to say.
+
+Now that this basic setup is complete all you have to do is place the place the graphing R scripts into each section.  You will notice that each section is differentiated by Row and the size of the section.  In the example I will create a scatterplot, histogram, and lineplot.  If you want to see how to create these graphs you can look at my previous posts on the subject.  You  will place each one of the graphing R functions within the created R-script area. You can the change the title of each graphic by changing the words next to the three hashtags.
+
+Here is an example of a dashboard: https://amayo16.github.io/dashboard/ 
+
+

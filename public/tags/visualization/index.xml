@@ -6,10 +6,19 @@
     <description>Recent content in Visualization on Andrew&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 29 Sep 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 02 Oct 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/visualization/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Introduction to Dashboards</title>
+      <link>/post/introduction-to-dashboards/</link>
+      <pubDate>Mon, 02 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/post/introduction-to-dashboards/</guid>
+      <description>A dashboard is a grouping of many visualizations that all tend to have a common theme. Today we will be creating a dashboard within R using data from the Lahman package. In order to create a dashboard we will be using the flexdashboard package. To begin, first go to new file and select R Markdown. Second, select ‘from template’ and choose the Flex Dashboard option. This will open up a file that looks similar to an R markdown file but is already formatted to make creating the dashboard easier.</description>
+    </item>
     
     <item>
       <title>Barplots Part 2 and Timeseries</title>
